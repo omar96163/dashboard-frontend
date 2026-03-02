@@ -51,6 +51,7 @@ export default function RegisterPage() {
   });
 
   const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState(null);
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -107,17 +108,40 @@ export default function RegisterPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="flex flex-col items-center bg-linear-to-bl via-indigo-200 rounded-full py-2">
+                <label className="block text-sm font-medium text-gray-700 mb-3">
                   صورتك الشخصية (اختياري)
                 </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setAvatarFile(e.target.files[0])}
-                  disabled={loading}
-                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-linear-to-r file:from-indigo-600 file:to-blue-500 file:text-white hover:file:from-indigo-700 hover:file:to-blue-600 disabled:opacity-50 transition-all"
-                />
+                <div className="relative w-32 h-32 rounded-full bg-indigo-100 overflow-hidden cursor-pointer shadow-md hover:shadow-lg transition-shadow border-2 border-indigo-300">
+                  {avatarPreview ? (
+                    <img
+                      src={avatarPreview}
+                      alt="Avatar preview"
+                      className="object-cover w-full h-full"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center w-full h-full text-indigo-500 text-3xl">
+                      📷
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    disabled={loading}
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      setAvatarFile(file);
+                      if (file) {
+                        const url = URL.createObjectURL(file);
+                        setAvatarPreview(url);
+                      } else {
+                        setAvatarPreview(null);
+                      }
+                    }}
+                  />
+                </div>
+                <p className="text-xs text-gray-500 mt-2">انقر لتغيير الصورة</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
