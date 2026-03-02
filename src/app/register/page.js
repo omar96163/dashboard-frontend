@@ -4,6 +4,7 @@ import { z } from "zod";
 import api from "@/lib/api";
 import { toast } from "sonner";
 import { useState } from "react";
+import { motion } from "motion/react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
@@ -15,17 +16,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const RegisterSchema = z
   .object({
-    name: z.string().min(2, { message: "Name must be at least 2 characters" }),
-    email: z.string().email({ message: "Please enter a valid email" }),
+    name: z.string().min(2, { message: "يجب أن يكون الإسم مكون من حرفين علي الأقل" }),
+    email: z.string().email({ message: "من فضلك أدخل بريداً إلكترونياً صحيحاً" }),
     password: z
       .string()
-      .min(8, { message: "Password must be at least 8 characters" }),
+      .min(8, { message: "يجب أن تكون كلمة المرور مكونة من 8 أحرف علي الاأقل" }),
     confirmPassword: z
       .string()
-      .min(8, { message: "Please confirm your password" }),
+      .min(8, { message: "من فضلك أكد كلمة المرور" }),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
+    message: "كلمت المرور غير متطابقتين",
     path: ["confirmPassword"],
   });
 
@@ -87,106 +88,142 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-50 via-white to-gray-50 p-4">
-      <Card className="w-full max-w-md shadow-xl animate-fade-in">
-        <CardHeader>
-          <CardTitle className="text-2xl text-center bg-linear-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-            Create an account
-          </CardTitle>
-          <p className="text-center text-gray-500 mt-2">
-            Sign up to get started
-          </p>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                الصورة الشخصية (اختياري)
-              </label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setAvatarFile(e.target.files[0])}
-                disabled={loading}
-                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-black file:text-white hover:file:bg-gray-800 disabled:opacity-50"
-              />
-            </div>
-            <div>
-              <Input
-                {...register("name")}
-                placeholder="Full Name"
-                type="text"
-                disabled={loading}
-                className={errors.name ? "ring-red-500 ring-1" : ""}
-              />
-              {errors.name && (
-                <p className="text-sm text-red-500 mt-2">
-                  {errors.name.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <Input
-                {...register("email")}
-                placeholder="Email"
-                type="email"
-                disabled={loading}
-                className={errors.email ? "ring-red-500 ring-1" : ""}
-              />
-              {errors.email && (
-                <p className="text-sm text-red-500 mt-2">
-                  {errors.email.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <Input
-                {...register("password")}
-                placeholder="Password"
-                type="password"
-                disabled={loading}
-                className={errors.password ? "ring-red-500 ring-1" : ""}
-              />
-              {errors.password && (
-                <p className="text-sm text-red-500 mt-1">
-                  {errors.password.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <Input
-                {...register("confirmPassword")}
-                placeholder="Confirm Password"
-                type="password"
-                disabled={loading}
-                className={errors.confirmPassword ? "ring-red-500 ring-1" : ""}
-              />
-              {errors.confirmPassword && (
-                <p className="text-sm text-red-500 mt-1">
-                  {errors.confirmPassword.message}
-                </p>
-              )}
-            </div>
-            <Button
-              type="submit"
-              className="w-full cursor-pointer"
-              disabled={loading}
-            >
-              {loading ? "Creating account..." : "Sign Up"}
-            </Button>
-            <p className="text-center text-sm text-gray-500 mt-4">
-              Already have an account?{" "}
-              <button
-                type="button"
-                onClick={() => router.push("/login")}
-                className="text-black font-medium hover:underline"
-              >
-                Sign in
-              </button>
+    <div className="min-h-screen flex items-center justify-center p-4 bg-linear-to-br via-indigo-100">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        <Card
+          className="md:w-125 shadow-xl border border-indigo-200 bg-linear-to-br via-indigo-100 
+          hover:shadow-2xl hover:shadow-gray-400 transition-all duration-300">
+          <CardHeader>
+            <CardTitle className="text-2xl text-center bg-linear-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
+              قم بإنشاء حساب جديد
+            </CardTitle>
+            <p className="text-center text-gray-500 mt-2">
+              ابدأ رحلتك معنا الآن
             </p>
-          </form>
-        </CardContent>
-      </Card>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  صورتك الشخصية (اختياري)
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setAvatarFile(e.target.files[0])}
+                  disabled={loading}
+                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-linear-to-r file:from-indigo-600 file:to-blue-500 file:text-white hover:file:from-indigo-700 hover:file:to-blue-600 disabled:opacity-50 transition-all"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  اسمك الكامل
+                </label>
+                <Input
+                  {...register("name")}
+                  placeholder="محمد علي"
+                  type="text"
+                  disabled={loading}
+                  className={`bg-white/50 border border-indigo-200/50 focus:border-indigo-500 focus:ring-indigo-500 ${errors.name ? "ring-red-500 ring-1" : ""
+                    }`}
+                />
+                {errors.name && (
+                  <p className="text-sm text-red-500 mt-2 flex items-center gap-1">
+                    <span>❌</span> {errors.name.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  البريد الإلكتروني
+                </label>
+                <Input
+                  {...register("email")}
+                  placeholder="example@example.com"
+                  type="email"
+                  disabled={loading}
+                  className={`bg-white/50 border border-indigo-200/50 focus:border-indigo-500 focus:ring-indigo-500 ${errors.email ? "ring-red-500 ring-1" : ""
+                    }`}
+                />
+                {errors.email && (
+                  <p className="text-sm text-red-500 mt-2 flex items-center gap-1">
+                    <span>❌</span> {errors.email.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  كلمة المرور
+                </label>
+                <Input
+                  {...register("password")}
+                  placeholder="••••••••"
+                  type="password"
+                  disabled={loading}
+                  className={`bg-white/50 border border-indigo-200/50 focus:border-indigo-500 focus:ring-indigo-500 ${errors.password ? "ring-red-500 ring-1" : ""
+                    }`}
+                />
+                {errors.password && (
+                  <p className="text-sm text-red-500 mt-2 flex items-center gap-1">
+                    <span>❌</span> {errors.password.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  تأكيد كلمة المرور
+                </label>
+                <Input
+                  {...register("confirmPassword")}
+                  placeholder="••••••••"
+                  type="password"
+                  disabled={loading}
+                  className={`bg-white/50 border border-indigo-200/50 focus:border-indigo-500 focus:ring-indigo-500 ${errors.confirmPassword ? "ring-red-500 ring-1" : ""
+                    }`}
+                />
+                {errors.confirmPassword && (
+                  <p className="text-sm text-red-500 mt-2 flex items-center gap-1">
+                    <span>❌</span> {errors.confirmPassword.message}
+                  </p>
+                )}
+              </div>
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Button
+                  type="submit"
+                  className="w-full cursor-pointer bg-linear-to-r from-indigo-600 to-blue-500 hover:from-indigo-700 hover:to-blue-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 py-2"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <span className="inline-block animate-spin">⏳</span>
+                      جاري إنشاء الحساب...
+                    </span>
+                  ) : (
+                    "إنشاء حساب"
+                  )}
+                </Button>
+              </motion.div>
+              <p className="text-center text-sm text-gray-600 mt-6">
+                هل لديك حسلب بالفعل ؟ {""}
+                <button
+                  type="button"
+                  onClick={() => router.push("/login")}
+                  className="text-indigo-600 font-semibold hover:text-indigo-700 hover:underline transition-colors cursor-pointer"
+                >
+                  تسجيل الدخول
+                </button>
+              </p>
+            </form>
+          </CardContent>
+        </Card>
+      </motion.div>
     </div>
   );
 }
