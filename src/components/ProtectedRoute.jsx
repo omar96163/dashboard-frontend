@@ -1,10 +1,10 @@
 "use client";
 
+import { ROLES } from "@/constants";
+import { Loader2 } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
-import { Loader2 } from "lucide-react";
-import { ROLES } from "@/constants";
 
 export function ProtectedRoute({ children, allowedRoles = [] }) {
   const router = useRouter();
@@ -75,9 +75,9 @@ export function ProtectedRoute({ children, allowedRoles = [] }) {
   // إذا لم يكن هناك token
   if (!authState.hasToken) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-linear-to-b from-indigo-50/50 via-white to-blue-50/50">
         <div className="text-center">
-          <Loader2 className="animate-spin h-8 w-8 text-gray-600 mx-auto mb-4" />
+          <Loader2 className="animate-spin h-8 w-8 text-indigo-600 mx-auto mb-4" />
           <p className="text-gray-600">جاري التحميل...</p>
         </div>
       </div>
