@@ -456,7 +456,7 @@ const Hero = ({ trustBadge, headline, subtitle, buttons, className = "" }) => {
       <style dangerouslySetInnerHTML={{ __html: animationStyles }} />
 
       <canvas 
-      //ref={canvasRef} 
+      ref={canvasRef} 
       />
 
       {/* Hero Content Overlay */}
