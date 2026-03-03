@@ -16,14 +16,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const RegisterSchema = z
   .object({
-    name: z.string().min(2, { message: "يجب أن يكون الإسم مكون من حرفين علي الأقل" }),
-    email: z.string().email({ message: "من فضلك أدخل بريداً إلكترونياً صحيحاً" }),
+    name: z
+      .string()
+      .min(2, { message: "يجب أن يكون الإسم مكون من حرفين علي الأقل" }),
+    email: z
+      .string()
+      .email({ message: "من فضلك أدخل بريداً إلكترونياً صحيحاً" }),
     password: z
       .string()
-      .min(8, { message: "يجب أن تكون كلمة المرور مكونة من 8 أحرف علي الاأقل" }),
-    confirmPassword: z
-      .string()
-      .min(8, { message: "من فضلك أكد كلمة المرور" }),
+      .min(8, {
+        message: "يجب أن تكون كلمة المرور مكونة من 8 أحرف علي الاأقل",
+      }),
+    confirmPassword: z.string().min(8, { message: "من فضلك أكد كلمة المرور" }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "كلمت المرور غير متطابقتين",
@@ -97,7 +101,8 @@ export default function RegisterPage() {
       >
         <Card
           className="md:w-125 shadow-xl border border-indigo-200 bg-linear-to-br via-indigo-100 
-          hover:shadow-2xl hover:shadow-gray-400 transition-all duration-300">
+          hover:shadow-2xl hover:shadow-gray-400 transition-all duration-300"
+        >
           <CardHeader>
             <CardTitle className="text-2xl text-center bg-linear-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
               قم بإنشاء حساب جديد
@@ -152,8 +157,9 @@ export default function RegisterPage() {
                   placeholder="محمد علي"
                   type="text"
                   disabled={loading}
-                  className={`bg-white/50 border border-indigo-200/50 focus:border-indigo-500 focus:ring-indigo-500 ${errors.name ? "ring-red-500 ring-1" : ""
-                    }`}
+                  className={`bg-white/50 border border-indigo-200/50 focus:border-indigo-500 focus:ring-indigo-500 ${
+                    errors.name ? "ring-red-500 ring-1" : ""
+                  }`}
                 />
                 {errors.name && (
                   <p className="text-sm text-red-500 mt-2 flex items-center gap-1">
@@ -170,8 +176,9 @@ export default function RegisterPage() {
                   placeholder="example@example.com"
                   type="email"
                   disabled={loading}
-                  className={`bg-white/50 border border-indigo-200/50 focus:border-indigo-500 focus:ring-indigo-500 ${errors.email ? "ring-red-500 ring-1" : ""
-                    }`}
+                  className={`bg-white/50 border border-indigo-200/50 focus:border-indigo-500 focus:ring-indigo-500 ${
+                    errors.email ? "ring-red-500 ring-1" : ""
+                  }`}
                 />
                 {errors.email && (
                   <p className="text-sm text-red-500 mt-2 flex items-center gap-1">
@@ -188,8 +195,9 @@ export default function RegisterPage() {
                   placeholder="••••••••"
                   type="password"
                   disabled={loading}
-                  className={`bg-white/50 border border-indigo-200/50 focus:border-indigo-500 focus:ring-indigo-500 ${errors.password ? "ring-red-500 ring-1" : ""
-                    }`}
+                  className={`bg-white/50 border border-indigo-200/50 focus:border-indigo-500 focus:ring-indigo-500 ${
+                    errors.password ? "ring-red-500 ring-1" : ""
+                  }`}
                 />
                 {errors.password && (
                   <p className="text-sm text-red-500 mt-2 flex items-center gap-1">
@@ -206,8 +214,9 @@ export default function RegisterPage() {
                   placeholder="••••••••"
                   type="password"
                   disabled={loading}
-                  className={`bg-white/50 border border-indigo-200/50 focus:border-indigo-500 focus:ring-indigo-500 ${errors.confirmPassword ? "ring-red-500 ring-1" : ""
-                    }`}
+                  className={`bg-white/50 border border-indigo-200/50 focus:border-indigo-500 focus:ring-indigo-500 ${
+                    errors.confirmPassword ? "ring-red-500 ring-1" : ""
+                  }`}
                 />
                 {errors.confirmPassword && (
                   <p className="text-sm text-red-500 mt-2 flex items-center gap-1">

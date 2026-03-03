@@ -49,11 +49,7 @@ export default function LoginPage() {
 
       login(token, user);
       toast.success(message || "Welcome back!");
-
-      // استخدام setTimeout لضمان حفظ البيانات قبل التوجيه
-      setTimeout(() => {
-        router.replace("/dashboard");
-      }, 100);
+      router.push("/dashboard");
     } catch (error) {
       const errorMessage = formatErrorMessage(error);
       toast.error(errorMessage);
@@ -71,7 +67,8 @@ export default function LoginPage() {
       >
         <Card
           className="md:w-125 shadow-xl border border-indigo-200 hover:shadow-2xl 
-          hover:shadow-gray-400 transition-all duration-300 bg-linear-to-br via-indigo-100">
+          hover:shadow-gray-400 transition-all duration-300 bg-linear-to-br via-indigo-100"
+        >
           <CardHeader>
             <CardTitle className="text-2xl text-center bg-linear-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
               أهلاً بعودتك
@@ -91,8 +88,9 @@ export default function LoginPage() {
                   placeholder="example@example.com"
                   type="email"
                   disabled={loading}
-                  className={`bg-white/50 border border-indigo-200/50 focus:border-indigo-500 focus:ring-indigo-500 ${errors.email ? "ring-red-500 ring-1" : ""
-                    }`}
+                  className={`bg-white/50 border border-indigo-200/50 focus:border-indigo-500 focus:ring-indigo-500 ${
+                    errors.email ? "ring-red-500 ring-1" : ""
+                  }`}
                 />
                 {errors.email && (
                   <p className="text-sm text-red-500 mt-2 flex items-center gap-1">
@@ -109,8 +107,9 @@ export default function LoginPage() {
                   placeholder="••••••••"
                   type="password"
                   disabled={loading}
-                  className={`bg-white/50 border border-indigo-200/50 focus:border-indigo-500 focus:ring-indigo-500 ${errors.password ? "ring-red-500 ring-1" : ""
-                    }`}
+                  className={`bg-white/50 border border-indigo-200/50 focus:border-indigo-500 focus:ring-indigo-500 ${
+                    errors.password ? "ring-red-500 ring-1" : ""
+                  }`}
                 />
                 {errors.password && (
                   <p className="text-sm text-red-500 mt-2 flex items-center gap-1">
@@ -138,7 +137,7 @@ export default function LoginPage() {
                 </Button>
               </motion.div>
               <p className="text-center text-sm text-gray-600 mt-6">
-              ليس لديك حساب ؟ {""}
+                ليس لديك حساب ؟ {""}
                 <button
                   type="button"
                   onClick={() => router.push("/register")}
