@@ -1,16 +1,38 @@
 "use client";
 
-import { useEffect } from "react";
+import { toast } from "sonner";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useAuthStore } from "@/store/useAuthStore";
 import Hero from "@/components/ui/animated-shader-hero";
 import { TestimonialsColumn } from "@/components/ui/testimonials-columns";
-import { Loader2, Briefcase, Users, BarChart3, ArrowRight } from "lucide-react";
+import {
+  Loader2,
+  Briefcase,
+  Users,
+  BarChart3,
+  ArrowRight,
+  Phone,
+  Mail,
+  MapPin,
+} from "lucide-react";
 
 export default function Home() {
   const router = useRouter();
   const { token, hydrate } = useAuthStore();
+
+  const [contactData, setContactData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+  const handleContactSubmit = (e) => {
+    e.preventDefault();
+    toast.success("شكراً لتواصلك معنا! سنرد عليك قريباً.");
+    setContactData({ name: "", email: "", message: "" });
+  };
+
   const testimonials = [
     {
       text: "This ERP revolutionized our operations, streamlining finance and inventory. The cloud-based platform keeps us productive, even remotely.",
@@ -898,6 +920,142 @@ export default function Home() {
           <p className="mt-8 text-center text-sm text-gray-500">
             الأسعار قابلة للتغيير. اتصل بفريقنا للعروض المخصصة والحلول المؤسسية.
           </p>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="py-24">
+        <div className="px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.6,
+              delay: 0.1,
+              ease: "easeOut",
+            }}
+            viewport={{ once: true }}
+            className="flex flex-col items-center mb-12"
+          >
+            <h2
+              className={`text-4xl md:text-5xl font-bold bg-linear-to-r from-indigo-600 via-blue-600 to-cyan-600 bg-clip-text 
+              text-transparent mb-3 py-2`}
+            >
+              تواصل معنا
+            </h2>
+            <p
+              className={`text-xsm text-gray-600 px-6 py-3 bg-blue-500/10 backdrop-blur-md border border-blue-300/30 
+              rounded-full`}
+            >
+              لديك أسئلة أو تحتاج إلى مساعدة ؟ فريق الدعم لدينا هنا لمساعدتك في
+              أي وقت ✨
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* form column */}
+            <motion.form
+              onSubmit={handleContactSubmit}
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{
+                duration: 0.6,
+                delay: 0.3,
+                ease: "easeOut",
+              }}
+              viewport={{ once: true }}
+              className="space-y-4"
+            >
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  اسمك
+                </label>
+                <input
+                  type="text"
+                  value={contactData.name}
+                  onChange={(e) =>
+                    setContactData({ ...contactData, name: e.target.value })
+                  }
+                  required
+                  className="w-full px-3 py-2 border border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  بريدك الإلكتروني
+                </label>
+                <input
+                  type="email"
+                  value={contactData.email}
+                  onChange={(e) =>
+                    setContactData({ ...contactData, email: e.target.value })
+                  }
+                  required
+                  className="w-full px-3 py-2 border border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  رسالتك
+                </label>
+                <textarea
+                  value={contactData.message}
+                  onChange={(e) =>
+                    setContactData({ ...contactData, message: e.target.value })
+                  }
+                  required
+                  rows={4}
+                  className="w-full px-3 py-2 border border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+              <div>
+                <button
+                  type="submit"
+                  className="w-full bg-linear-to-r from-indigo-600 to-blue-500 text-white py-2 rounded-lg font-semibold hover:from-indigo-700 hover:to-blue-600 transition-all duration-300"
+                >
+                  إرسال
+                </button>
+              </div>
+            </motion.form>
+
+            {/* info column */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{
+                duration: 0.6,
+                delay: 0.5,
+                ease: "easeOut",
+              }}
+              viewport={{ once: true }}
+              className="space-y-6 flex flex-col justify-center items-end"
+            >
+              <div className="flex items-center">
+                <span className="text-gray-700 hover:text-shadow-lg">
+                  +123 456 7890
+                </span>
+                <div className="w-10 h-10 flex items-center justify-center text-blue-600 m-2 bg-linear-to-br via-blue-200 rounded-full animate-pulse">
+                  <Phone className="w-5 h-5" />
+                </div>
+              </div>
+              <div className="flex items-center">
+                <span className="text-gray-700 hover:text-shadow-lg">
+                  support@example.com
+                </span>
+                <div className="w-10 h-10 flex items-center justify-center text-red-600 m-2 bg-linear-to-br via-red-200 rounded-full animate-pulse">
+                  <Mail className="w-5 h-5" />
+                </div>
+              </div>
+              <div className="flex items-center">
+                <span className="text-gray-700 hover:text-shadow-lg">
+                  الرياض، المملكة العربية السعودية
+                </span>
+                <div className="w-10 h-10 flex items-center justify-center text-green-600 m-2 bg-linear-to-br via-green-200 rounded-full animate-pulse">
+                  <MapPin className="w-5 h-5" />
+                </div>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
 

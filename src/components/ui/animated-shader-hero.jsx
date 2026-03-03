@@ -455,7 +455,9 @@ const Hero = ({ trustBadge, headline, subtitle, buttons, className = "" }) => {
     >
       <style dangerouslySetInnerHTML={{ __html: animationStyles }} />
 
-      <canvas ref={canvasRef} />
+      <canvas 
+      ref={canvasRef} 
+      />
 
       {/* Hero Content Overlay */}
       <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-white">
