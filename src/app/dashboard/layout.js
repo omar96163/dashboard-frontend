@@ -1,9 +1,13 @@
 "use client";
 
-import { useRouter, usePathname } from "next/navigation";
-import { useAuthStore } from "@/store/useAuthStore";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Image from "next/image";
+import { toast } from "sonner";
+import { ROLES } from "@/constants";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { useAuthStore } from "@/store/useAuthStore";
+import { useRouter, usePathname } from "next/navigation";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import {
   LogOut,
   User,
@@ -12,9 +16,6 @@ import {
   Briefcase,
   Calendar,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { useEffect, useState } from "react";
 
 export default function DashboardLayout({ children }) {
   const router = useRouter();
@@ -56,19 +57,19 @@ export default function DashboardLayout({ children }) {
       },
     ];
 
-    if (user.role === "admin") {
+    if (user.role === ROLES.ADMIN) {
       items.push({
         label: "المستخدمين",
         href: "/dashboard/admin",
         icon: Users,
       });
-    } else if (user.role === "freelancer") {
+    } else if (user.role === ROLES.FREELANCER) {
       items.push({
         label: "خدماتي",
         href: "/dashboard/freelancer",
         icon: Briefcase,
       });
-    } else if (user.role === "client") {
+    } else if (user.role === ROLES.CLIENT) {
       items.push({
         label: "حجوزاتي",
         href: "/dashboard/client",
@@ -81,53 +82,42 @@ export default function DashboardLayout({ children }) {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-gray-50">
+      <div className="min-h-screen bg-linear-to-b from-indigo-50/50 via-white to-blue-50/50">
         {/* Navigation Bar */}
         <nav className="bg-white/80 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-50 shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between h-16">
               <div className="flex items-center space-x-8">
-                <div className="shrink-0 flex items-center">
-                  <h1 className="text-xl font-bold bg-linear-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                    Dashboard
-                  </h1>
-                </div>
                 <div className="flex space-x-2">
                   {getNavItems().map((item) => {
                     const Icon = item.icon;
-                    const isActive =
-                      pathname === item.href ||
-                      (item.href === "/dashboard" &&
-                        pathname.startsWith("/dashboard/"));
+                    const isActive = pathname === item.href;
                     return (
                       <button
                         key={item.href}
                         onClick={() => router.push(item.href)}
-                        className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                           isActive
-                            ? "bg-black text-white shadow-md"
-                            : "text-gray-700 hover:bg-gray-100 hover:text-black"
+                            ? "bg-linear-to-r from-indigo-600 to-blue-500 text-white shadow-md"
+                            : "text-gray-700 hover:bg-indigo-50 hover:text-indigo-700"
                         }`}
                       >
-                        <Icon size={18} />
+                        <Icon size={18} className={isActive ? "text-white" : "text-indigo-600"} />
                         <span>{item.label}</span>
                       </button>
                     );
                   })}
                 </div>
               </div>
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center gap-4">
                 {user && (
                   <button
                     onClick={() => router.push("/dashboard/profile")}
-                    className="flex items-center space-x-2 text-sm text-gray-700 hover:text-black transition-colors px-3 py-2 rounded-lg hover:bg-gray-100"
+                    className="flex items-center gap-3 text-sm text-gray-700 hover:text-black transition-colors px-3 py-2 rounded-lg hover:bg-gray-100"
                   >
                     {user.avatar && user.avatar !== "default" ? (
                       <Image
-                        src={`${
-                          process.env.NEXT_PUBLIC_API_BASE_URL ||
-                          "https://current-janela-omaralbaz-22690ac0.koyeb.app/api"
-                        }/uploads/${user.avatar}`}
+                        src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/uploads/${user.avatar}`}
                         alt={user.name}
                         width={32}
                         height={32}
@@ -135,7 +125,7 @@ export default function DashboardLayout({ children }) {
                         unoptimized // لحل مشاكل backend headers لو ظهرت
                       />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-linear-to-br from-gray-400 to-gray-600 flex items-center justify-center text-white text-xs font-semibold">
+                      <div className="w-8 h-8 rounded-full bg-linear-to-br from-indigo-600 to-blue-500 flex items-center justify-center text-white text-xs font-semibold">
                         {user.name?.charAt(0)?.toUpperCase() || "U"}
                       </div>
                     )}
@@ -145,8 +135,8 @@ export default function DashboardLayout({ children }) {
                         {user.role === "admin"
                           ? "مدير"
                           : user.role === "freelancer"
-                          ? "مستقل"
-                          : "عميل"}
+                            ? "مستقل"
+                            : "عميل"}
                       </span>
                     </div>
                   </button>
@@ -154,9 +144,9 @@ export default function DashboardLayout({ children }) {
                 <Button
                   variant="outline"
                   onClick={handleLogout}
-                  className="flex items-center space-x-2"
+                  className="flex items-center gap-2 border-indigo-200 text-indigo-700 hover:bg-indigo-50"
                 >
-                  <LogOut size={18} />
+                  <LogOut size={18} className="text-indigo-600" />
                   <span>تسجيل الخروج</span>
                 </Button>
               </div>
