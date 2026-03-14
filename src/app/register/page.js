@@ -22,11 +22,9 @@ const RegisterSchema = z
     email: z
       .string()
       .email({ message: "من فضلك أدخل بريداً إلكترونياً صحيحاً" }),
-    password: z
-      .string()
-      .min(8, {
-        message: "يجب أن تكون كلمة المرور مكونة من 8 أحرف علي الاأقل",
-      }),
+    password: z.string().min(8, {
+      message: "يجب أن تكون كلمة المرور مكونة من 8 أحرف علي الاأقل",
+    }),
     confirmPassword: z.string().min(8, { message: "من فضلك أكد كلمة المرور" }),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -101,7 +99,7 @@ export default function RegisterPage() {
       >
         <Card
           className="md:w-125 shadow-xl border border-indigo-200 bg-linear-to-br via-indigo-100 
-          hover:shadow-2xl hover:shadow-gray-400 transition-all duration-300"
+          hover:shadow-2xl hover:shadow-gray-400 transition-all duration-300 p-6"
         >
           <CardHeader>
             <CardTitle className="text-2xl text-center bg-linear-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">

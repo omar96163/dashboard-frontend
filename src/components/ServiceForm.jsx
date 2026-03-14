@@ -159,7 +159,7 @@ export function ServiceForm({ service, onSubmit, onCancel, isLoading }) {
               </div>
             </div>
 
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-2">
               <input
                 type="checkbox"
                 id="isActive"
@@ -174,7 +174,7 @@ export function ServiceForm({ service, onSubmit, onCancel, isLoading }) {
               </label>
             </div>
 
-            <div className="flex space-x-2">
+            <div className="flex gap-2">
               <Button
                 type="submit"
                 disabled={isLoading}

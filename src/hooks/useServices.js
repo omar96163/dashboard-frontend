@@ -5,22 +5,32 @@ import { formatErrorMessage } from "@/lib/errorHandler";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 // جلب جميع الخدمات
-export function useServices() {
+export function useServices(page, limit) {
   return useQuery({
-    queryKey: ["services"],
+    queryKey: ["services", page, limit],
+
     queryFn: async () => {
       try {
-        const res = await api.get("services");
-        if (res.data?.status === "success" && res.data?.data?.services) {
-          return res.data.data.services;
+        const { data } = await api.get(`/services?page=${page}&limit=${limit}`);
+
+        if (data?.status !== "success") {
+          throw new Error(error);
         }
-        throw new Error("Invalid response format");
+
+        return {
+          services: data.data,
+          results: data.results,
+          pagination: data.pagination,
+          totalServices: data.totalServices,
+        };
       } catch (error) {
         console.error("Error fetching services:", error);
         throw error;
       }
     },
+
     staleTime: QUERY_STALE_TIME.SHORT,
+    keepPreviousData: true,
   });
 }
 

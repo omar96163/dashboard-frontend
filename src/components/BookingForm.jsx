@@ -129,7 +129,7 @@ export function BookingForm({
               )}
             </div>
 
-            <div className="flex space-x-2">
+            <div className="flex gap-2">
               <Button
                 type="submit"
                 disabled={isLoading}

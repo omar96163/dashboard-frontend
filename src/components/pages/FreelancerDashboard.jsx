@@ -1,6 +1,5 @@
 "use client";
 
-import { ProtectedRoute } from "@/components/ProtectedRoute";
 import {
   useServices,
   useCreateService,
@@ -22,6 +21,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { useState } from "react";
+import { motion } from "motion/react";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { useConfirmDialog } from "@/hooks/useConfirmDialog";
 import { BOOKING_STATUS, BOOKING_STATUS_LABELS } from "@/constants";
@@ -71,7 +71,7 @@ export default function FreelancerDashboard() {
         } finally {
           setDeletingId(null);
         }
-      }
+      },
     );
   };
 
@@ -106,17 +106,20 @@ export default function FreelancerDashboard() {
 
   if (isLoading) {
     return (
-      <ProtectedRoute allowedRoles={["freelancer"]}>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <Loader2 className="animate-spin h-8 w-8 text-gray-600" />
-        </div>
-      </ProtectedRoute>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="animate-spin h-8 w-8 text-gray-600" />
+      </div>
     );
   }
 
   return (
-    <ProtectedRoute allowedRoles={["freelancer"]}>
-      <div className="space-y-6 animate-fade-in">
+    <div>
+      <motion.div
+        className="space-y-6"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+      >
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">
@@ -208,7 +211,7 @@ export default function FreelancerDashboard() {
         </div>
 
         {/* Tabs */}
-        <div className="flex space-x-4 border-b">
+        <div className="flex gap-4 border-b">
           <button
             onClick={() => setActiveTab("services")}
             className={`px-4 py-2 font-medium transition-colors ${
@@ -290,7 +293,7 @@ export default function FreelancerDashboard() {
                             ${service.price}
                           </span>
                         </div>
-                        <div className="flex space-x-2 pt-2">
+                        <div className="flex gap-2 pt-2">
                           <Button
                             variant="outline"
                             size="sm"
@@ -353,7 +356,7 @@ export default function FreelancerDashboard() {
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <div className="flex items-center space-x-3 mb-2">
+                          <div className="flex items-center gap-3 mb-2">
                             <h3 className="text-lg font-semibold">
                               {typeof booking.serviceId === "object" &&
                               booking.serviceId?.title
@@ -363,11 +366,11 @@ export default function FreelancerDashboard() {
                             {getStatusBadge(booking.status)}
                           </div>
                           <div className="space-y-1 text-sm text-gray-600">
-                            <div className="flex items-center space-x-2">
+                            <div className="flex items-center gap-2">
                               <Calendar size={16} />
                               <span>
                                 {new Date(
-                                  booking.bookingDate
+                                  booking.bookingDate,
                                 ).toLocaleDateString("ar-SA", {
                                   weekday: "long",
                                   year: "numeric",
@@ -414,7 +417,7 @@ export default function FreelancerDashboard() {
             )}
           </>
         )}
-      </div>
+      </motion.div>
       <ConfirmDialog
         isOpen={confirmDialog.isOpen}
         onClose={confirmDialog.close}
@@ -423,6 +426,6 @@ export default function FreelancerDashboard() {
         message={confirmDialog.config.message}
         isLoading={deleteService.isPending}
       />
-    </ProtectedRoute>
+    </div>
   );
 }

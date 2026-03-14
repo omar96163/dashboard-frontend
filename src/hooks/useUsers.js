@@ -4,23 +4,33 @@ import { QUERY_STALE_TIME } from "@/constants";
 import { formatErrorMessage } from "@/lib/errorHandler";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-// جلب جميع المستخدمين (Admin only)
-export function useUsers() {
+// جلب جميع المستخدمين
+export function useUsers(page, limit) {
   return useQuery({
-    queryKey: ["users"],
+    queryKey: ["users", page, limit],
+
     queryFn: async () => {
       try {
-        const res = await api.get("users");
-        if (res.data?.status === "success" && res.data?.data?.users) {
-          return res.data.data.users;
+        const { data } = await api.get(`/users?page=${page}&limit=${limit}`);
+
+        if (data?.status !== "success") {
+          throw new Error(error);
         }
-        throw new Error("Invalid response format");
+
+        return {
+          users: data.data,
+          results: data.results,
+          pagination: data.pagination,
+          usersCount: data.usersCount,
+        };
       } catch (error) {
-        console.error("Error fetching users:", error);
+        console.error("Error fetching services:", error);
         throw error;
       }
     },
+
     staleTime: QUERY_STALE_TIME.SHORT,
+    keepPreviousData: true,
   });
 }
 

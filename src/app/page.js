@@ -20,7 +20,7 @@ import {
 
 export default function Home() {
   const router = useRouter();
-  const { token, hydrate } = useAuthStore();
+  const { user, token, hydrate } = useAuthStore();
 
   const [contactData, setContactData] = useState({
     name: "",
@@ -95,18 +95,19 @@ export default function Home() {
 
   useEffect(() => {
     hydrate();
-    if (typeof window !== "undefined") {
-      const storedToken = localStorage.getItem("token");
-      if (storedToken) {
-        router.replace("/dashboard");
-      }
-    }
-  }, [router, hydrate]);
+  }, [hydrate]);
 
-  if (typeof window !== "undefined" && token) {
+  useEffect(() => {
+    if (token && user) router.replace("/dashboard");
+  }, [token, user, router]);
+
+  if (typeof window !== "undefined" && token && user) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-blue-50 to-indigo-100">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <Loader2 className="animate-spin h-8 w-8 text-indigo-600" />
+        <p className="mt-4 text-gray-600 animate-pulse">
+          جاري التحويل إلي لوحة التحكم الخاصة بك ...
+        </p>
       </div>
     );
   }

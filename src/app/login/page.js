@@ -66,7 +66,7 @@ export default function LoginPage() {
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
         <Card
-          className="md:w-125 shadow-xl border border-indigo-200 hover:shadow-2xl 
+          className="md:w-125 shadow-xl border border-indigo-200 hover:shadow-2xl p-6
           hover:shadow-gray-400 transition-all duration-300 bg-linear-to-br via-indigo-100"
         >
           <CardHeader>
