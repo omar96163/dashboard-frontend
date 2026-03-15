@@ -69,7 +69,7 @@ export default function RegisterPage() {
         formData.append("avatar", avatarFile);
       }
 
-      const res = await api.post("users/register", formData, {
+      const res = await api.post("/api/users/register", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

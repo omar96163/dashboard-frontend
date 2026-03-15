@@ -10,7 +10,7 @@ export function useBookings() {
     queryKey: ["bookings"],
     queryFn: async () => {
       try {
-        const res = await api.get("bookings");
+        const res = await api.get("/api/bookings");
         if (res.data?.status === "success" && res.data?.data?.bookings) {
           return res.data.data.bookings;
         }
@@ -30,7 +30,7 @@ export function useBooking(id) {
     queryKey: ["bookings", id],
     queryFn: async () => {
       try {
-        const res = await api.get(`bookings/${id}`);
+        const res = await api.get(`/api/bookings/${id}`);
         if (res.data?.status === "success" && res.data?.data?.booking) {
           return res.data.data.booking;
         }
@@ -51,7 +51,7 @@ export function useCreateBooking() {
   return useMutation({
     mutationFn: async (data) => {
       try {
-        const res = await api.post("bookings", data);
+        const res = await api.post("/api/bookings", data);
         if (res.data?.status === "success" && res.data?.data?.booking) {
           return res.data.data.booking;
         }
@@ -81,7 +81,7 @@ export function useUpdateBooking() {
   return useMutation({
     mutationFn: async ({ id, data }) => {
       try {
-        const res = await api.patch(`bookings/${id}`, data);
+        const res = await api.patch(`/api/bookings/${id}`, data);
         if (res.data?.status === "success" && res.data?.data?.booking) {
           return res.data.data.booking;
         }
@@ -117,7 +117,7 @@ export function useDeleteBooking() {
   return useMutation({
     mutationFn: async (id) => {
       try {
-        await api.delete(`bookings/${id}`);
+        await api.delete(`/api/bookings/${id}`);
         return id;
       } catch (error) {
         console.error("Error deleting booking:", error);

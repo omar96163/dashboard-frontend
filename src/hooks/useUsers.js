@@ -11,7 +11,7 @@ export function useUsers(page, limit) {
 
     queryFn: async () => {
       try {
-        const { data } = await api.get(`/users?page=${page}&limit=${limit}`);
+        const { data } = await api.get(`/api/users?page=${page}&limit=${limit}`);
 
         if (data?.status !== "success") {
           throw new Error(error);
@@ -40,7 +40,7 @@ export function useMyAccount() {
     queryKey: ["myAccount"],
     queryFn: async () => {
       try {
-        const res = await api.get("users/myAccount");
+        const res = await api.get("/api/users/myAccount");
         if (res.data?.status === "success" && res.data?.data?.myAccount) {
           return res.data.data.myAccount;
         }
@@ -69,7 +69,7 @@ export function useUpdateUser() {
         formData.append("avatar", file);
       }
 
-      const res = await api.patch(`users/${id}`, formData, {
+      const res = await api.patch(`/api/users/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -95,7 +95,7 @@ export function useDeleteUser() {
 
   return useMutation({
     mutationFn: async (id) => {
-      await api.delete(`users/${id}`);
+      await api.delete(`/api/users/${id}`);
       return id;
     },
     onSuccess: (deletedId) => {

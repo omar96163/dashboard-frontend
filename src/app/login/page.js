@@ -42,7 +42,7 @@ export default function LoginPage() {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      const res = await api.post("users/login", data);
+      const res = await api.post("/api/users/login", data);
       const token = res.data.token;
       const user = res.data.data.user;
       const message = res.data.message;

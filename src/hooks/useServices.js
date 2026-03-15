@@ -11,7 +11,7 @@ export function useServices(page, limit) {
 
     queryFn: async () => {
       try {
-        const { data } = await api.get(`/services?page=${page}&limit=${limit}`);
+        const { data } = await api.get(`/api/services?page=${page}&limit=${limit}`);
 
         if (data?.status !== "success") {
           throw new Error(error);
@@ -39,7 +39,7 @@ export function useService(id) {
   return useQuery({
     queryKey: ["services", id],
     queryFn: async () => {
-      const res = await api.get(`services/${id}`);
+      const res = await api.get(`/api/services/${id}`);
       return res.data.data.service;
     },
     enabled: id ? true : false,
@@ -53,7 +53,7 @@ export function useCreateService() {
   return useMutation({
     mutationFn: async (data) => {
       try {
-        const res = await api.post("services", data);
+        const res = await api.post("/api/services", data);
         if (res.data?.status === "success" && res.data?.data?.service) {
           return res.data.data.service;
         }
@@ -82,7 +82,7 @@ export function useUpdateService() {
   return useMutation({
     mutationFn: async ({ id, data }) => {
       try {
-        const res = await api.patch(`services/${id}`, data);
+        const res = await api.patch(`/api/services/${id}`, data);
         if (res.data?.status === "success" && res.data?.data?.service) {
           return res.data.data.service;
         }
@@ -118,7 +118,7 @@ export function useDeleteService() {
   return useMutation({
     mutationFn: async (id) => {
       try {
-        await api.delete(`services/${id}`);
+        await api.delete(`/api/services/${id}`);
         return id;
       } catch (error) {
         console.error("Error deleting service:", error);
