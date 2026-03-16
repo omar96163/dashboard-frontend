@@ -105,15 +105,19 @@ export default function AllUsers() {
                           {user.name.charAt(0).toUpperCase()}
                         </span>
                       </div>
-                      <div>
+                      <div className="text-right">
                         <h3
                           className="font-semibold text-gray-900"
                           title="Name"
                         >
                           {user.name}
                         </h3>
-                        <p className="text-sm text-gray-500" title="E-mail">
-                          {user.email.split("@")[0]} @
+                        <p
+                          className="text-sm text-gray-500"
+                          title="E-mail"
+                          dir="ltr"
+                        >
+                          {user.email.split("@")[0]}@
                         </p>
                       </div>
                     </div>
