@@ -101,20 +101,26 @@ export default function AllBookings() {
                   <div className="space-y-3 mb-6">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-gray-600">المشتري :</span>
-                      <span className="font-medium">
-                        {booking.buyerId?.name || "غير محدد"}
+                      <span className="font-medium" dir="ltr">
+                        {booking.buyerEmail
+                          ? `${booking.buyerEmail}`
+                          : "غير محدد"}
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-gray-600">البائع :</span>
-                      <span className="font-medium">
-                        {booking.sellerId?.name || "غير محدد"}
+                      <span className="font-medium" dir="ltr">
+                        {booking.sellerEmail
+                          ? `${booking.sellerEmail}`
+                          : "غير محدد"}
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-gray-600">الخدمة :</span>
                       <span className="font-medium">
-                        {booking.serviceId?.title || "غير محدد"}
+                        {booking.bookedServiceTitle
+                          ? `${booking.bookedServiceTitle}`
+                          : "غير محدد"}
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
