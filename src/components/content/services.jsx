@@ -112,7 +112,7 @@ export default function AllServices() {
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-gray-600">البائع :</span>
                       <span className="font-medium">
-                        {service.sellerId?.name || "غير محدد"}
+                        {service.sellerEmail ? `${service.sellerEmail}` : "غير محدد"}
                       </span>
                     </div>
                   </div>

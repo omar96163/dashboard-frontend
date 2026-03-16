@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useAuthStore } from "@/store/useAuthStore";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_BASE_URL = "https://dashboard-backend-production-bbd4.up.railway.app";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
