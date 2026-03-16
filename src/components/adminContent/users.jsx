@@ -11,7 +11,9 @@ import { useConfirmDialog } from "@/hooks/useConfirmDialog";
 import { Trash2, Users as UsersIcon, Loader2 } from "lucide-react";
 
 export default function AllUsers() {
-  const { data, isLoading, error } = useUsers(1, 10);
+  const limit = 9;
+  const [page, setPage] = useState(1);
+  const { data, isLoading, error } = useUsers(page, limit);
 
   const users = data?.users;
   const results = data?.results;
@@ -37,6 +39,12 @@ export default function AllUsers() {
         }
       },
     );
+  };
+
+  const handlePageChange = (newPage) => {
+    if (!pagination) return;
+    const pageNum = Math.max(1, Math.min(newPage, pagination.totalPages));
+    setPage(pageNum);
   };
 
   if (isLoading) {
@@ -73,78 +81,109 @@ export default function AllUsers() {
       </div>
       <div>
         {users && users.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {users.map((user, index) => (
-              <motion.div
-                key={user._id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{
-                  duration: 0.5,
-                  delay: index * 0.1,
-                  ease: "easeOut",
-                }}
-                className="border-t-[3px] border-r-[3px] rounded-tl-3xl border-gray-300 p-6 space-y-4 hover:bg-linear-to-bl from-gray-100"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <div
-                      title={user.name}
-                      className="w-10 h-10 bg-linear-to-br from-indigo-500 to-blue-600 rounded-full flex items-center justify-center ml-3"
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+              {users.map((user, index) => (
+                <motion.div
+                  key={user._id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{
+                    duration: 0.5,
+                    delay: index * 0.1,
+                    ease: "easeOut",
+                  }}
+                  className="border-t-[3px] border-r-[3px] rounded-tl-3xl border-gray-300 p-6 space-y-4 hover:bg-linear-to-bl from-gray-100"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <div
+                        title={user.name}
+                        className="w-10 h-10 bg-linear-to-br from-indigo-500 to-blue-600 rounded-full flex items-center justify-center ml-3"
+                      >
+                        <span className="text-white font-semibold text-sm">
+                          {user.name.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                      <div>
+                        <h3
+                          className="font-semibold text-gray-900"
+                          title="Name"
+                        >
+                          {user.name}
+                        </h3>
+                        <p className="text-sm text-gray-500" title="E-mail">
+                          {user.email.split("@")[0]} @
+                        </p>
+                      </div>
+                    </div>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        user.role === "admin"
+                          ? "bg-red-100 text-red-800 border border-red-200"
+                          : user.role === "freelancer"
+                            ? "bg-blue-100 text-blue-800 border border-blue-200"
+                            : "bg-green-100 text-green-800 border border-green-200"
+                      }`}
                     >
-                      <span className="text-white font-semibold text-sm">
-                        {user.name.charAt(0).toUpperCase()}
-                      </span>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900" title="Name">
-                        {user.name}
-                      </h3>
-                      <p className="text-sm text-gray-500" title="E-mail">
-                        {user.email.split("@")[0]} @
-                      </p>
-                    </div>
-                  </div>
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      user.role === "admin"
-                        ? "bg-red-100 text-red-800 border border-red-200"
-                        : user.role === "freelancer"
-                          ? "bg-blue-100 text-blue-800 border border-blue-200"
-                          : "bg-green-100 text-green-800 border border-green-200"
-                    }`}
-                  >
-                    {ROLE_LABELS[user.role] || user.role}
-                  </span>
-                </div>
-
-                <div className="border-t-[3px] pt-4 border-gray-300">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-600">تاريخ التسجيل:</span>
-                    <span className="font-medium">
-                      {new Date(user.createdAt).toLocaleDateString("ar-SA")}
+                      {ROLE_LABELS[user.role] || user.role}
                     </span>
                   </div>
-                </div>
 
-                <div className="flex justify-end pt-2">
+                  <div className="border-t-[3px] pt-4 border-gray-300">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">تاريخ التسجيل:</span>
+                      <span className="font-medium">
+                        {new Date(user.createdAt).toLocaleDateString("ar-SA")}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end pt-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleDelete(user._id)}
+                      disabled={deletingId === user._id}
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 hover:border-red-300 cursor-pointer"
+                    >
+                      {deletingId === user._id ? (
+                        <Loader2 className="animate-spin h-4 w-4" />
+                      ) : (
+                        <Trash2 className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+            
+            {pagination?.totalPages > 1 && (
+              <div className="mt-10 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="text-sm text-gray-600">
+                  الصفحة {pagination.currentPage} من {pagination.totalPages}
+                </div>
+                <div className="flex items-center gap-2">
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => handleDelete(user._id)}
-                    disabled={deletingId === user._id}
-                    className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 hover:border-red-300 cursor-pointer"
+                    onClick={() => handlePageChange(pagination.currentPage - 1)}
+                    disabled={pagination.currentPage <= 1}
                   >
-                    {deletingId === user._id ? (
-                      <Loader2 className="animate-spin h-4 w-4" />
-                    ) : (
-                      <Trash2 className="h-4 w-4" />
-                    )}
+                    السابق
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handlePageChange(pagination.currentPage + 1)}
+                    disabled={pagination.currentPage >= pagination.totalPages}
+                  >
+                    التالي
                   </Button>
                 </div>
-              </motion.div>
-            ))}
-          </div>
+              </div>
+            )}
+          </>
         ) : (
           <motion.div
             initial={{ opacity: 0, x: -20 }}

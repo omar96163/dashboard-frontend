@@ -5,22 +5,33 @@ import { formatErrorMessage } from "@/lib/errorHandler";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 // جلب جميع الحجوزات
-export function useBookings() {
+export function useBookings(page, limit) {
   return useQuery({
-    queryKey: ["bookings"],
+    queryKey: ["bookings", page, limit],
+
     queryFn: async () => {
       try {
-        const res = await api.get("/api/bookings");
-        if (res.data?.status === "success" && res.data?.data?.bookings) {
-          return res.data.data.bookings;
+        const { data } = await api.get(
+          `/api/bookings?page=${page}&limit=${limit}`,
+        );
+
+        if (data?.status !== "success") {
+          throw new Error(error);
         }
-        throw new Error("Invalid response format");
+
+        return {
+          bookings: data.data,
+          results: data.results,
+          pagination: data.pagination,
+          totalBookings: data.totalBookings,
+        };
       } catch (error) {
         console.error("Error fetching bookings:", error);
         throw error;
       }
     },
     staleTime: QUERY_STALE_TIME.SHORT,
+    keepPreviousData: true,
   });
 }
 

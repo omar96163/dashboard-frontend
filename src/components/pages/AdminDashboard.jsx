@@ -23,7 +23,7 @@ export default function AdminDashboard() {
 
   const stats = {
     totalServices: services?.totalServices || 0,
-    totalBookings: bookings?.length || 0,
+    totalBookings: bookings?.totalBookings || 0,
     totalUsers: users?.usersCount?.totalUsers || 0,
     totalAdmins: users?.usersCount?.totalAdmins || 0,
     totalClientes: users?.usersCount?.totalClientes || 0,
