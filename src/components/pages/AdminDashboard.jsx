@@ -5,12 +5,12 @@ import { motion } from "motion/react";
 import { useUsers } from "@/hooks/useUsers";
 import { useServices } from "@/hooks/useServices";
 import { useBookings } from "@/hooks/useBookings";
+import AllUsers from "@/components/content/users";
 import { useAuthStore } from "@/store/useAuthStore";
-import AllUsers from "@/components/adminContent/users";
+import AllServices from "@/components/content/services";
+import AllBookings from "@/components/content/bookings";
 import { Card, CardContent } from "@/components/ui/card";
-import AllServices from "@/components/adminContent/services";
-import AllBookings from "@/components/adminContent/bookings";
-import { Users as UsersIcon, Briefcase, Calendar, Icon } from "lucide-react";
+import { Users as UsersIcon, Briefcase, Calendar } from "lucide-react";
 
 export default function AdminDashboard() {
   const { user } = useAuthStore();
@@ -195,7 +195,7 @@ export default function AdminDashboard() {
             delay: 0.4,
             ease: "easeOut",
           }}
-          className="flex flex-col items-start gap-3 border-r-4 border-t-4 rounded-tl-3xl py-6 pl-9 pr-3 border-indigo-300 h-fit"
+          className="space-y-3 border-r-4 border-t-4 rounded-tl-3xl py-6 pl-9 pr-3 border-indigo-300 h-fit"
         >
           {buttons.map((button) => {
             const Icon = button.icon;
@@ -223,7 +223,7 @@ export default function AdminDashboard() {
             );
           })}
         </motion.div>
-        <section>
+        <section className="h-screen">
           {ActiveButton === "قائمة المستخدمين" ? (
             <AllUsers />
           ) : ActiveButton === "قائمة الخدمات" ? (
