@@ -74,7 +74,7 @@ export default function AllBookings() {
                     <div className="flex items-center">
                       <div>
                         <h3 className="font-semibold text-gray-900 mb-1">
-                          سعر الخدمة : {booking.bookingPrice} $
+                          سعر الحجز : {booking.bookingPrice} $
                         </h3>
                         <p className="text-sm text-gray-500">
                           {booking.notes
