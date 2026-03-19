@@ -32,8 +32,6 @@ export default function CreateBookingForm({ service, booking, onCancel }) {
     register,
     handleSubmit,
     formState: { errors },
-    setValue,
-    watch,
   } = useForm({
     resolver: zodResolver(BookingSchema),
     defaultValues: booking || {
@@ -50,9 +48,6 @@ export default function CreateBookingForm({ service, booking, onCancel }) {
     });
     if (onCancel) onCancel();
   };
-
-  // عند تغيير التاريخ، تحديث السعر إذا لم يكن محجوز مسبقاً
-  const bookingDate = watch("bookingDate");
 
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
