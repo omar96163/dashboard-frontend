@@ -24,7 +24,7 @@ const BookingSchema = z.object({
     .optional(),
 });
 
-export default function CreateBookingForm({ service, booking, onCancel }) {
+export default function BookingForm({ service, booking, onCancel }) {
   const createBookingMutation = useCreateBooking();
   const isLoading = createBookingMutation.isPending;
 

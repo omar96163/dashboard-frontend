@@ -8,7 +8,7 @@ import { Briefcase, Loader2 } from "lucide-react";
 import { useServices } from "@/hooks/useServices";
 import { useAuthStore } from "@/store/useAuthStore";
 import { ErrorAlert } from "@/components/ErrorAlert";
-import CreateBookingForm from "@/components/content/createbookingForm";
+import BookingForm from "@/components/content/bookingForm";
 
 export default function AllServices() {
   const { user } = useAuthStore();
@@ -65,7 +65,7 @@ export default function AllServices() {
         {selectedService && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
             <div className="w-full max-w-lg">
-              <CreateBookingForm
+              <BookingForm
                 service={selectedService}
                 onCancel={() => setSelectedService(null)}
               />
