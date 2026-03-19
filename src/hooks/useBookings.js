@@ -60,27 +60,32 @@ export function useCreateBooking() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data) => {
+    mutationFn: async (details) => {
       try {
-        const res = await api.post("/api/bookings", data);
-        if (res.data?.status === "success" && res.data?.data?.booking) {
-          return res.data.data.booking;
+        const { data } = await api.post("/api/bookings", details);
+
+        if (data?.status !== "success") {
+          throw new Error(error);
         }
-        throw new Error("Invalid response format");
+
+        return {
+          booking: data.data,
+          message: data.message,
+        };
       } catch (error) {
         console.error("Error creating booking:", error);
         throw error;
       }
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["bookings"] });
       queryClient.invalidateQueries({ queryKey: ["services"] });
-      toast.success("تم إنشاء الحجز بنجاح");
+      toast.success(data.message);
     },
     onError: (error) => {
       const errorMsg = formatErrorMessage(error);
       toast.error(errorMsg);
-      console.error("Create booking error:", error);
+      console.error("Error creating booking::", error);
     },
   });
 }

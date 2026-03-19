@@ -1,13 +1,20 @@
 "use client";
 
 import { useState } from "react";
+import { ROLES } from "@/constants";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Briefcase, Loader2 } from "lucide-react";
 import { useServices } from "@/hooks/useServices";
+import { useAuthStore } from "@/store/useAuthStore";
 import { ErrorAlert } from "@/components/ErrorAlert";
+import CreateBookingForm from "@/components/content/createbookingForm";
 
 export default function AllServices() {
+  const { user } = useAuthStore();
+  const userRole = user.role;
+  const [selectedService, setSelectedService] = useState(null);
+
   const limit = 9;
   const [page, setPage] = useState(1);
   const { data, isLoading, error } = useServices(page, limit);
@@ -55,6 +62,16 @@ export default function AllServices() {
         </strong>
       </div>
       <div>
+        {selectedService && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+            <div className="w-full max-w-lg">
+              <CreateBookingForm
+                service={selectedService}
+                onCancel={() => setSelectedService(null)}
+              />
+            </div>
+          </div>
+        )}
         {services && services.length > 0 ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
@@ -112,7 +129,9 @@ export default function AllServices() {
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-gray-600">البائع :</span>
                       <span className="font-medium" dir="ltr">
-                        {service.sellerEmail ? `${service.sellerEmail}` : "غير محدد"}
+                        {service.sellerEmail
+                          ? `${service.sellerEmail}`
+                          : "غير محدد"}
                       </span>
                     </div>
                   </div>
@@ -127,6 +146,16 @@ export default function AllServices() {
                       </span>
                     </div>
                   </div>
+
+                  {userRole === ROLES.CLIENT && (
+                    <Button
+                      onClick={() => setSelectedService(service)}
+                      className="w-full mt-8 bg-linear-to-r from-indigo-600 to-blue-500 text-white 
+                      hover:from-indigo-700 hover:to-blue-600 cursor-pointer"
+                    >
+                      حجز الخدمة
+                    </Button>
+                  )}
                 </motion.div>
               ))}
             </div>
