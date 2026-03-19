@@ -95,27 +95,32 @@ export function useUpdateBooking() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, data }) => {
+    mutationFn: async ({ id, details }) => {
       try {
-        const res = await api.patch(`/api/bookings/${id}`, data);
-        if (res.data?.status === "success" && res.data?.data?.booking) {
-          return res.data.data.booking;
+        const { data } = await api.patch(`/api/bookings/${id}`, details);
+
+        if (data?.status !== "success") {
+          throw new Error(error);
         }
-        throw new Error("Invalid response format");
+
+        return {
+          booking: data.data,
+          message: data.message,
+        };
       } catch (error) {
         console.error("Error updating booking:", error);
         throw error;
       }
     },
-    onSuccess: (updatedBooking, variables) => {
+    onSuccess: (data, variables) => {
       queryClient.setQueryData(["bookings"], (bookings) => {
         if (!bookings) return bookings;
         return bookings.map((booking) =>
-          booking._id === variables.id ? updatedBooking : booking,
+          booking._id === variables.id ? data.booking : booking,
         );
       });
       queryClient.invalidateQueries({ queryKey: ["bookings"] });
-      toast.success("تم تحديث الحجز بنجاح");
+      toast.success(data.message);
     },
     onError: (error) => {
       const errorMsg = formatErrorMessage(error);

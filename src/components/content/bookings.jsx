@@ -1,13 +1,20 @@
 "use client";
 
 import { useState } from "react";
+import { ROLES } from "@/constants";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Briefcase, Loader2 } from "lucide-react";
 import { useBookings } from "@/hooks/useBookings";
+import { useAuthStore } from "@/store/useAuthStore";
 import { ErrorAlert } from "@/components/ErrorAlert";
+import BookingForm from "@/components/content/bookingForm";
 
 export default function AllBookings() {
+  const { user } = useAuthStore();
+  const userRole = user.role;
+  const [selectedBooking, setSelectedBooking] = useState(null);
+
   const limit = 9;
   const [page, setPage] = useState(1);
   const { data, isLoading, error } = useBookings(page, limit);
@@ -55,6 +62,16 @@ export default function AllBookings() {
         </strong>
       </div>
       <div>
+        {selectedBooking && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+            <div className="w-full max-w-lg">
+              <BookingForm
+                booking={selectedBooking}
+                onCancel={() => setSelectedBooking(null)}
+              />
+            </div>
+          </div>
+        )}
         {bookings && bookings.length > 0 ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
@@ -143,6 +160,17 @@ export default function AllBookings() {
                       </span>
                     </div>
                   </div>
+
+                  {(userRole === ROLES.CLIENT ||
+                    userRole === ROLES.FREELANCER) && (
+                    <Button
+                      onClick={() => setSelectedBooking(booking)}
+                      className="w-full mt-8 bg-linear-to-r from-indigo-600 to-blue-500 text-white 
+                      hover:from-indigo-700 hover:to-blue-600 cursor-pointer"
+                    >
+                      تعديل الحجز
+                    </Button>
+                  )}
                 </motion.div>
               ))}
             </div>
