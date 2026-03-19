@@ -128,8 +128,8 @@ export default function LoginPage() {
                 >
                   {loading ? (
                     <span className="flex items-center justify-center gap-2">
-                      <span className="inline-block animate-spin">⏳</span>
                       جاري تسجيل الدخول...
+                      <span className="inline-block animate-spin">⏳</span>
                     </span>
                   ) : (
                     "تسجيل الدخول"

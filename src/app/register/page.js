@@ -233,8 +233,8 @@ export default function RegisterPage() {
                 >
                   {loading ? (
                     <span className="flex items-center justify-center gap-2">
-                      <span className="inline-block animate-spin">⏳</span>
                       جاري إنشاء الحساب...
+                      <span className="inline-block animate-spin">⏳</span>
                     </span>
                   ) : (
                     "إنشاء حساب"

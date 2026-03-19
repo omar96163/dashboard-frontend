@@ -2,8 +2,8 @@ export function formatErrorMessage(error) {
   if (error.response) {
     const data = error.response.data;
 
-    if (Array.isArray(data.error)) {
-      return data.error[0].msg || "Validation error";
+    if (Array.isArray(data.message || data.error)) {
+      return data.message[0].msg || data.error[0].msg || "Validation error";
     }
 
     if (typeof data.error === "string") {
