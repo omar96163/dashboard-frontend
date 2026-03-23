@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { ROLES } from "@/constants";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Briefcase, Loader2 } from "lucide-react";
@@ -9,6 +8,7 @@ import { useBookings } from "@/hooks/useBookings";
 import { useAuthStore } from "@/store/useAuthStore";
 import { ErrorAlert } from "@/components/ErrorAlert";
 import BookingForm from "@/components/content/bookingForm";
+import { BOOKING_STATUS, BOOKING_STATUS_LABELS, ROLES } from "@/constants";
 
 export default function AllBookings() {
   const { user } = useAuthStore();
@@ -102,16 +102,16 @@ export default function AllBookings() {
                     </div>
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        booking.status === "pending"
+                        booking.status === BOOKING_STATUS.PENDING
                           ? "bg-yellow-100 text-yellow-800 border border-yellow-200"
-                          : booking.status === "confirmed"
+                          : booking.status === BOOKING_STATUS.CONFIRMED
                             ? "bg-blue-100 text-blue-800 border border-blue-200"
-                            : booking.status === "completed"
+                            : booking.status === BOOKING_STATUS.COMPLETED
                               ? "bg-green-100 text-green-800 border border-green-200"
                               : "bg-red-100 text-red-800 border border-red-200"
                       }`}
                     >
-                      {booking.status}
+                      {BOOKING_STATUS_LABELS[booking.status] || booking.status}
                     </span>
                   </div>
 

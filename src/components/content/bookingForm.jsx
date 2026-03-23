@@ -6,27 +6,43 @@ import { X } from "lucide-react";
 import { motion } from "motion/react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import { useAuthStore } from "@/store/useAuthStore";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCreateBooking } from "@/hooks/useBookings";
+import { useCreateBooking, useUpdateBooking } from "@/hooks/useBookings";
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-const BookingSchema = z.object({
-  bookingDate: z
-    .string()
-    .refine(
-      (date) => new Date(date) >= new Date(new Date().setHours(0, 0, 0, 0)),
-      { message: "تاريخ الحجز يجب أن يكون في المستقبل" },
-    ),
-  bookingPrice: z.number().min(50, { message: "السعر يجب أن لا يقل عن 50 $" }),
-  notes: z
-    .string()
-    .max(500, { message: "الملاحظات يجب أن لا تتجاوز 500 حرف" })
-    .optional(),
-});
+import { BOOKING_STATUS, BOOKING_STATUS_LABELS, ROLES } from "@/constants";
 
 export default function BookingForm({ service, booking, onCancel }) {
+  const { user } = useAuthStore();
+  const userRole = user.role;
+
   const createBookingMutation = useCreateBooking();
-  const isLoading = createBookingMutation.isPending;
+  const updateBookingMutation = useUpdateBooking();
+  const isLoading =
+    createBookingMutation.isPending || updateBookingMutation.isPending;
+
+  const BookingSchema = React.useMemo(() => {
+    return z.object({
+      bookingDate: z
+        .string()
+        .min(1, { message: "الرجاء تحديد تاريخ الحجز" })
+        .refine(
+          (date) => {
+            if (booking) return true;
+            return new Date(date) >= new Date(new Date().setHours(0, 0, 0, 0));
+          },
+          { message: "تاريخ الحجز يجب أن يكون في المستقبل" },
+        ),
+      bookingPrice: z
+        .number()
+        .min(50, { message: "السعر يجب أن لا يقل عن 50 $" }),
+      status: z.string().optional(),
+      notes: z
+        .string()
+        .max(500, { message: "الملاحظات يجب أن لا تتجاوز 500 حرف" })
+        .optional(),
+    });
+  }, [booking]);
 
   const {
     register,
@@ -34,18 +50,30 @@ export default function BookingForm({ service, booking, onCancel }) {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(BookingSchema),
-    defaultValues: booking || {
-      bookingDate: "",
-      bookingPrice: service?.price || 0,
-      notes: "",
-    },
+    defaultValues: booking
+      ? {
+          ...booking,
+          bookingDate: booking?.bookingDate?.split("T")[0] || "",
+        }
+      : {
+          bookingDate: "",
+          bookingPrice: service?.price || 0,
+          notes: "",
+        },
   });
 
   const handleFormSubmit = async (data) => {
-    await createBookingMutation.mutateAsync({
-      serviceId: service?._id,
-      ...data,
-    });
+    if (booking) {
+      await updateBookingMutation.mutateAsync({
+        id: booking._id,
+        details: data,
+      });
+    } else if (service) {
+      await createBookingMutation.mutateAsync({
+        serviceId: service?._id,
+        ...data,
+      });
+    }
     if (onCancel) onCancel();
   };
 
@@ -62,7 +90,11 @@ export default function BookingForm({ service, booking, onCancel }) {
     >
       <div className="mb-6 p-6 bg-white rounded-xl border-4 border-gray-300">
         <CardHeader className="flex flex-row items-center justify-between mb-6 font-bold text-xl">
-          <CardTitle>{`${booking ? "تعديل حجز : " : "حجز خدمة : "} ${service?.title}`}</CardTitle>
+          <CardTitle>
+            {booking
+              ? `تعديل حجز : ${booking?.bookedServiceTitle}`
+              : `حجز خدمة : ${service?.title}`}
+          </CardTitle>
           {onCancel && (
             <Button
               variant="outline"
@@ -105,7 +137,10 @@ export default function BookingForm({ service, booking, onCancel }) {
                 min="50"
                 step="0.01"
                 disabled={isLoading}
-                placeholder={service?.price?.toString()}
+                placeholder={
+                  service?.price?.toString() ||
+                  booking?.bookingPrice?.toString()
+                }
                 className="w-full bg-white/50 border border-indigo-200/50 rounded-md px-3 py-2 text-sm placeholder:text-gray-500 
                 focus:outline-none focus:ring-2 focus:ring-gray-400 disabled:cursor-not-allowed disabled:opacity-50"
               />
@@ -115,6 +150,32 @@ export default function BookingForm({ service, booking, onCancel }) {
                 </p>
               )}
             </div>
+
+            {booking && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  حالة الحجز
+                </label>
+                <select
+                  {...register("status")}
+                  defaultValue={booking?.status}
+                  disabled={isLoading || userRole === ROLES.CLIENT}
+                  className="w-full bg-white/50 border border-indigo-200/50 rounded-md px-3 py-2 text-sm cursor-pointer appearance-none
+                  focus:outline-none focus:ring-2 focus:ring-gray-400 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {Object.values(BOOKING_STATUS).map((status) => (
+                    <option key={status} value={status}>
+                      {BOOKING_STATUS_LABELS[status]}
+                    </option>
+                  ))}
+                </select>
+                {errors.status && (
+                  <p className="text-sm text-red-500 mt-2">
+                    {errors.status.message}
+                  </p>
+                )}
+              </div>
+            )}
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -143,7 +204,7 @@ export default function BookingForm({ service, booking, onCancel }) {
               >
                 {isLoading ? (
                   <span className="flex items-center justify-center gap-2">
-                    جاري حجز الخدمة ...
+                    {booking ? "جاري التعديل ..." : "جاري الحجز ..."}
                     <span className="inline-block animate-spin">⏳</span>
                   </span>
                 ) : booking ? (
