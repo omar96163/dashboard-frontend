@@ -150,7 +150,7 @@ export default function AllBookings() {
                     </div>
                   </div>
 
-                  <div className="border-t-[3px] pt-4 border-gray-300">
+                  <div className="border-t-[3px] pt-4 border-gray-300 mb-8">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-gray-600">تاريخ طلب الخدمة :</span>
                       <span className="font-medium">
@@ -163,13 +163,22 @@ export default function AllBookings() {
 
                   {(userRole === ROLES.CLIENT ||
                     userRole === ROLES.FREELANCER) && (
-                    <Button
-                      onClick={() => setSelectedBooking(booking)}
-                      className="w-full mt-8 bg-linear-to-r from-indigo-600 to-blue-500 text-white 
-                      hover:from-indigo-700 hover:to-blue-600 cursor-pointer"
+                    <div
+                      className={
+                        booking.status === BOOKING_STATUS.PENDING
+                          ? "cursor-not-allowed disabled:opacity-50"
+                          : ""
+                      }
                     >
-                      تعديل الحجز
-                    </Button>
+                      <Button
+                        onClick={() => setSelectedBooking(booking)}
+                        disabled={booking.status !== BOOKING_STATUS.PENDING}
+                        className="w-full bg-linear-to-r from-indigo-600 to-blue-500 text-white
+                        hover:from-indigo-700 hover:to-blue-600 cursor-pointer"
+                      >
+                        تعديل الحجز
+                      </Button>
+                    </div>
                   )}
                 </motion.div>
               ))}
