@@ -138,20 +138,27 @@ export function useDeleteBooking() {
   return useMutation({
     mutationFn: async (id) => {
       try {
-        await api.delete(`/api/bookings/${id}`);
-        return id;
+        const { data } = await api.delete(`/api/bookings/${id}`);
+
+        if (data?.status !== "success") {
+          throw new Error(error);
+        }
+
+        return {
+          message: data.message,
+        };
       } catch (error) {
         console.error("Error deleting booking:", error);
         throw error;
       }
     },
-    onSuccess: (deletedId) => {
+    onSuccess: (data, variables) => {
       queryClient.setQueryData(["bookings"], (bookings) => {
         if (!bookings) return bookings;
-        return bookings.filter((booking) => booking._id !== deletedId);
+        return bookings.filter((booking) => booking._id !== variables.id);
       });
       queryClient.invalidateQueries({ queryKey: ["bookings"] });
-      toast.success("تم حذف الحجز بنجاح");
+      toast.success(data.message);
     },
     onError: (error) => {
       const errorMsg = formatErrorMessage(error);

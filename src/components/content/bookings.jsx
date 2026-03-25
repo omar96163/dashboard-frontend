@@ -2,12 +2,15 @@
 
 import { useState } from "react";
 import { motion } from "motion/react";
+import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Briefcase, Loader2 } from "lucide-react";
-import { useBookings } from "@/hooks/useBookings";
 import { useAuthStore } from "@/store/useAuthStore";
 import { ErrorAlert } from "@/components/ErrorAlert";
 import BookingForm from "@/components/content/bookingForm";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { useConfirmDialog } from "@/hooks/useConfirmDialog";
+import { useBookings, useDeleteBooking } from "@/hooks/useBookings";
 import { BOOKING_STATUS, BOOKING_STATUS_LABELS, ROLES } from "@/constants";
 
 export default function AllBookings() {
@@ -18,15 +21,35 @@ export default function AllBookings() {
   const limit = 9;
   const [page, setPage] = useState(1);
   const { data, isLoading, error } = useBookings(page, limit);
-
   const results = data?.results;
   const bookings = data?.bookings;
   const pagination = data?.pagination;
+
+  const deleteBooking = useDeleteBooking();
+  const [deletingId, setDeletingId] = useState(null);
+  const confirmDialog = useConfirmDialog();
 
   const handlePageChange = (newPage) => {
     if (!pagination) return;
     const pageNum = Math.max(1, Math.min(newPage, pagination.totalPages));
     setPage(pageNum);
+  };
+
+  const handleDeleteBooking = async (id) => {
+    const bookingToDelete = bookings?.find((b) => b._id === id);
+    confirmDialog.open(
+      "حذف الحجز",
+      `هل انت متاكد من حذف الحجز " ${bookingToDelete.bookedServiceTitle} " ؟`,
+      async () => {
+        setDeletingId(id);
+        try {
+          await deleteBooking.mutateAsync(id);
+        } catch (error) {
+        } finally {
+          setDeletingId(null);
+        }
+      },
+    );
   };
 
   if (isLoading) {
@@ -163,20 +186,34 @@ export default function AllBookings() {
 
                   {(userRole === ROLES.CLIENT ||
                     userRole === ROLES.FREELANCER) && (
-                    <div
-                      className={
-                        booking.status === BOOKING_STATUS.PENDING
-                          ? "cursor-not-allowed disabled:opacity-50"
-                          : ""
-                      }
-                    >
-                      <Button
-                        onClick={() => setSelectedBooking(booking)}
-                        disabled={booking.status !== BOOKING_STATUS.PENDING}
-                        className="w-full bg-linear-to-r from-indigo-600 to-blue-500 text-white
-                        hover:from-indigo-700 hover:to-blue-600 cursor-pointer"
+                    <div className="flex items-center justify-between gap-2.5">
+                      <div
+                        className={
+                          booking.status === BOOKING_STATUS.PENDING
+                            ? "cursor-not-allowed disabled:opacity-50 w-[78%]"
+                            : "w-[78%]"
+                        }
                       >
-                        تعديل الحجز
+                        <Button
+                          onClick={() => setSelectedBooking(booking)}
+                          disabled={booking.status !== BOOKING_STATUS.PENDING}
+                          className="w-full bg-linear-to-r from-indigo-600 to-blue-500 text-white
+                          hover:from-indigo-700 hover:to-blue-600 cursor-pointer"
+                        >
+                          تعديل الحجز
+                        </Button>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDeleteBooking(booking._id)}
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 hover:border-red-300 cursor-pointer"
+                      >
+                        {deletingId === booking._id ? (
+                          <Loader2 className="animate-spin h-4 w-4" />
+                        ) : (
+                          <Trash2 className="h-4 w-4" />
+                        )}
                       </Button>
                     </div>
                   )}
@@ -231,6 +268,14 @@ export default function AllBookings() {
           </motion.div>
         )}
       </div>
+      <ConfirmDialog
+        isOpen={confirmDialog.isOpen}
+        onClose={confirmDialog.close}
+        onConfirm={confirmDialog.handleConfirm}
+        title={confirmDialog.config.title}
+        message={confirmDialog.config.message}
+        isLoading={deleteBooking.isPending}
+      />
     </motion.section>
   );
 }
