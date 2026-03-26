@@ -187,7 +187,7 @@ export default function ClientDashboard() {
               );
             })}
           </motion.div>
-          <section className="h-screen">
+          <section className="min-h-screen">
             {ActiveButton === "جميع الخدمات" ? (
               <AllServices />
             ) : ActiveButton === "حجوزاتي" ? (

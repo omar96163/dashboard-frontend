@@ -223,7 +223,7 @@ export default function AdminDashboard() {
             );
           })}
         </motion.div>
-        <section className="h-screen">
+        <section className="min-h-screen">
           {ActiveButton === "قائمة المستخدمين" ? (
             <AllUsers />
           ) : ActiveButton === "قائمة الخدمات" ? (

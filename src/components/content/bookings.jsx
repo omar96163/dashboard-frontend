@@ -232,6 +232,7 @@ export default function AllBookings() {
                     size="sm"
                     onClick={() => handlePageChange(pagination.currentPage - 1)}
                     disabled={pagination.currentPage <= 1}
+                    className="cursor-pointer"
                   >
                     السابق
                   </Button>
@@ -240,6 +241,7 @@ export default function AllBookings() {
                     size="sm"
                     onClick={() => handlePageChange(pagination.currentPage + 1)}
                     disabled={pagination.currentPage >= pagination.totalPages}
+                    className="cursor-pointer"
                   >
                     التالي
                   </Button>
