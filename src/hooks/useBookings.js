@@ -24,6 +24,10 @@ export function useBookings(page, limit) {
           results: data.results,
           pagination: data.pagination,
           totalBookings: data.totalBookings,
+          pendingBookings: data.pendingBookings,
+          confirmedBookings: data.confirmedBookings,
+          completedBookings: data.completedBookings,
+          cancelledBookings: data.cancelledBookings,
         };
       } catch (error) {
         console.error("Error fetching bookings:", error);

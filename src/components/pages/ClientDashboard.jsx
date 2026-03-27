@@ -2,24 +2,25 @@
 
 import { useState } from "react";
 import { motion } from "motion/react";
-import { useServices } from "@/hooks/useServices";
 import { useBookings } from "@/hooks/useBookings";
 import { useAuthStore } from "@/store/useAuthStore";
 import AllServices from "@/components/content/services";
 import AllBookings from "@/components/content/bookings";
 import { Card, CardContent } from "@/components/ui/card";
-import { Calendar, Briefcase, TrendingUp, DollarSign } from "lucide-react";
+import { Calendar, Briefcase, TrendingUp, Check, X, Clock } from "lucide-react";
 
 export default function ClientDashboard() {
   const { user } = useAuthStore();
 
-  const { data: services } = useServices();
   const { data: bookings } = useBookings();
   const [ActiveButton, setActiveButton] = useState("جميع الخدمات");
 
   const stats = {
-    totalServices: services?.totalServices || 0,
     totalBookings: bookings?.totalBookings || 0,
+    pendingBookings: bookings?.pendingBookings || 0,
+    confirmedBookings: bookings?.confirmedBookings || 0,
+    completedBookings: bookings?.completedBookings || 0,
+    cancelledBookings: bookings?.cancelledBookings || 0,
   };
 
   const buttons = [
@@ -75,14 +76,14 @@ export default function ClientDashboard() {
             delay: 0.2,
             ease: "easeOut",
           }}
-          className="grid grid-cols-1 md:grid-cols-4 gap-6"
+          className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6"
         >
           <Card className="bg-linear-to-br from-blue-50 to-blue-100 border-blue-200">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-blue-600">
-                    إجمالي الحجوزات
+                    إجمالي حجوزاتي
                   </p>
                   <p className="text-3xl font-bold text-blue-900 mt-2">
                     {stats.totalBookings}
@@ -95,19 +96,55 @@ export default function ClientDashboard() {
             </CardContent>
           </Card>
 
+          <Card className="bg-linear-to-br from-purple-50 to-purple-100 border-purple-200">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-purple-600">
+                    الحجوزات المؤكدة
+                  </p>
+                  <p className="text-3xl font-bold text-purple-900 mt-2">
+                    {stats.confirmedBookings}
+                  </p>
+                </div>
+                <div className="bg-purple-500 rounded-full p-3">
+                  <TrendingUp className="text-white" size={24} />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           <Card className="bg-linear-to-br from-green-50 to-green-100 border-green-200">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-green-600">
-                    إجمالي الإنفاق
+                    الحجوزات المكتملة
                   </p>
                   <p className="text-3xl font-bold text-green-900 mt-2">
-                    ${stats.totalSpent || "لا يوجد"}
+                    {stats.completedBookings}
                   </p>
                 </div>
                 <div className="bg-green-500 rounded-full p-3">
-                  <DollarSign className="text-white" size={24} />
+                  <Check className="text-white" size={24} />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-linear-to-br from-red-50 to-red-100 border-red-200">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-red-600">
+                    الحجوزات الملغاة
+                  </p>
+                  <p className="text-3xl font-bold text-red-900 mt-2">
+                    {stats.cancelledBookings}
+                  </p>
+                </div>
+                <div className="bg-red-500 rounded-full p-3">
+                  <X className="text-white" size={24} />
                 </div>
               </div>
             </CardContent>
@@ -121,29 +158,11 @@ export default function ClientDashboard() {
                     الحجوزات المعلقة
                   </p>
                   <p className="text-3xl font-bold text-yellow-900 mt-2">
-                    {stats.pendingBookings || "لا يوجد"}
+                    {stats.pendingBookings}
                   </p>
                 </div>
                 <div className="bg-yellow-500 rounded-full p-3">
-                  <TrendingUp className="text-white" size={24} />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-linear-to-br from-purple-50 to-purple-100 border-purple-200">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-purple-600">
-                    الخدمات المتاحة
-                  </p>
-                  <p className="text-3xl font-bold text-purple-900 mt-2">
-                    {stats.totalServices}
-                  </p>
-                </div>
-                <div className="bg-purple-500 rounded-full p-3">
-                  <Briefcase className="text-white" size={24} />
+                  <Clock className="text-white" size={24} />
                 </div>
               </div>
             </CardContent>
