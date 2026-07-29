@@ -111,7 +111,7 @@ export default function RegisterPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div className="flex flex-col items-center bg-linear-to-bl via-indigo-200 rounded-full py-2">
+              <div className="flex flex-col items-center bg-linear-to-bl via-indigo-200 rounded-full py-2 mt-4">
                 <label className="block text-sm font-medium text-gray-700 mb-3">
                   صورتك الشخصية (اختياري)
                 </label>
