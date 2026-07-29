@@ -88,7 +88,7 @@ export default function LoginPage() {
                   placeholder="example@example.com"
                   type="email"
                   disabled={loading}
-                  className={`bg-white/50 border border-indigo-200/50 focus:border-indigo-500 focus:ring-indigo-500 ${
+                  className={`bg-white/50 border border-indigo-200/50 focus:border-indigo-500 focus:ring-indigo-500 w-full p-1.5 rounded-md ${
                     errors.email ? "ring-red-500 ring-1" : ""
                   }`}
                 />
@@ -107,7 +107,7 @@ export default function LoginPage() {
                   placeholder="••••••••"
                   type="password"
                   disabled={loading}
-                  className={`bg-white/50 border border-indigo-200/50 focus:border-indigo-500 focus:ring-indigo-500 ${
+                  className={`bg-white/50 border border-indigo-200/50 focus:border-indigo-500 focus:ring-indigo-500 w-full p-1.5 rounded-md ${
                     errors.password ? "ring-red-500 ring-1" : ""
                   }`}
                 />
